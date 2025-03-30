@@ -130,7 +130,16 @@ def animate(frame):
     Vx, Vy = compute_velocity_field(time_factor, cylinder_positions)
     speed = np.sqrt(Vx**2 + Vy**2)
     print(cylinder_temps)
-    for i, pos in enumerate(cylinder_positions):
+    if N > 1:
+        if N > 1:
+            avg_neighbor_dist = np.mean(distances[nearest_indices])
+            avg_neighbor_pos = np.mean(neighbor_positions, axis=0)
+        else:
+            avg_neighbor_dist = 0
+            avg_neighbor_pos = pos
+    else:
+        neighbor_positions = []
+        neighbor_temps = []
         if abs(pos[0]) > 1e4:
             new_positions.append(pos)
             new_temps.append(cylinder_temps[i])
