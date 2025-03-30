@@ -6,16 +6,20 @@ from matplotlib.cm import ScalarMappable
 from mpl_toolkits.axes_grid1.inset_locator import inset_axes
 
 # === Simulation Constants ===
-N = 25
+N = 1
 R = 0.15
 hard_stop = 1.01 * 2 * R
 U = 1.0
-T_air = -25.0
-T_min, T_max = 30.0, 45.0
+T_air = 30.0
+T_min, T_max = 28.0, 44.0
 T_opt = 37.5
 T_cold_death = 28.0
 T_hot_death = 44.0
 m_neighbors = 7
+k_air=0.01
+k_wind=0.015
+k_rad=0.06
+k_body=0.05
 dt = 0.001
 
 # === Auto Grid & Domain Sizing ===
@@ -42,8 +46,8 @@ norm = Normalize(vmin=T_min, vmax=T_max)
 scalar_map = ScalarMappable(norm=norm, cmap='RdYlBu_r')
 
 # === Plot Setup ===
-fig_width = (12 * xlim) / 2
-fig_height = (10 * ylim) / 2
+fig_width = 1200#(12 * xlim) / 2
+fig_height = 1000#(10 * ylim) / 2
 fig, ax = plt.subplots(figsize=(fig_width, fig_height))
 
 # Main wind colormap
@@ -108,10 +112,13 @@ def compute_velocity_field(time_factor, cylinders):
 
 # === Temperature Update ===
 def update_temperature(T, T_air, wind_speed, neighbors,
-                       k_air=0.01, k_wind=0.015, k_rad=0.06, Q_body=0.6):
+                       k_air=0.01, k_wind=0.015, k_rad=0.06, k_body=0.05):
+    delta = T_opt - T
+    Q_body = k_body * (1 / (1 + np.exp(-5 * delta)))  # Sigmoid: tapers to 0 or k_body
     T_air_loss = k_air * (T - T_air)
     T_wind_loss = k_wind * wind_speed**0.6
     T_rad_gain = k_rad * np.mean([max(0, Tn - T) for Tn in neighbors]) if neighbors else 0
+
     return T - T_air_loss - T_wind_loss + Q_body + T_rad_gain
 
 # === Animation Frame ===
@@ -131,15 +138,29 @@ def animate(frame):
 
         distances = np.linalg.norm(cylinder_positions - pos, axis=1)
         nearest_indices = np.argsort(distances)[1:m_neighbors+1]
-        nearby_mask = distances[nearest_indices] < hard_stop
+        neighbor_positions = cylinder_positions[nearest_indices]
+        neighbor_temps = [cylinder_temps[j] for j in nearest_indices]
         temp = cylinder_temps[i]
 
-        if temp > T_opt + 1.0:
-            direction = pos - np.mean(cylinder_positions[nearest_indices], axis=0)
-        elif np.any(~nearby_mask):
-            direction = np.mean(cylinder_positions[nearest_indices], axis=0) - pos
+        avg_neighbor_dist = np.mean(distances[nearest_indices])
+        avg_neighbor_pos = np.mean(neighbor_positions, axis=0)
+
+        # Determine direction based on temperature optimization
+        direction = np.zeros(2)
+        if temp > T_opt + 0.8:
+            # Repel from neighbors when too hot
+            direction = pos - avg_neighbor_pos
+        elif temp < T_opt - 0.8:
+            # Attract to neighbors if cold, but taper if already close
+            if avg_neighbor_dist > 2 * R:
+                direction = avg_neighbor_pos - pos
+            else:
+                # Huddle force decreases as already close
+                direction = (avg_neighbor_pos - pos) * (avg_neighbor_dist / (2 * R))
         else:
+            # No strong huddle/repel needed
             direction = np.zeros(2)
+
 
         norm = np.linalg.norm(direction)
         if norm > 1e-6:
@@ -163,7 +184,7 @@ def animate(frame):
         iy = np.argmin(np.abs(y_vals - new_pos[1]))
         wind_local = speed[iy, ix]
         neighbors = [cylinder_temps[j] for j in nearest_indices]
-        T_new = update_temperature(temp, T_air, wind_local, neighbors)
+        T_new = update_temperature(temp, T_air, wind_local, neighbors, k_air, k_wind, k_rad, k_body)
 
         if T_new < T_cold_death or T_new > T_hot_death:
             new_positions[-1] = np.array([9999.0, 9999.0])
