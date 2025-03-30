@@ -67,8 +67,7 @@ def equilibrium(rho, u):              # Equilibrium distribution function.
     #return (x-cx)**2+(y-cy)**2<r**2
 
 def obstacle_fun(x, y):
-    return (np.abs(x - cx + y - cy) + np.abs(x - cx - y + cy) <= 50) + (y == 0) + (y == ny - 1)
-
+    return (x - cx)**2 + (y - cy)**2 <= r**2                                                                               
 
 
 # Initial velocity profile: almost zero, with a slight perturbation to trigger
