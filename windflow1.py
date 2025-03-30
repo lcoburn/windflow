@@ -129,30 +129,26 @@ def animate(frame):
 
     Vx, Vy = compute_velocity_field(time_factor, cylinder_positions)
     speed = np.sqrt(Vx**2 + Vy**2)
-    print(cylinder_temps)
-    if N > 1:
-        if N > 1:
-            avg_neighbor_dist = np.mean(distances[nearest_indices])
-            avg_neighbor_pos = np.mean(neighbor_positions, axis=0)
-        else:
-            avg_neighbor_dist = 0
-            avg_neighbor_pos = pos
-    else:
-        neighbor_positions = []
-        neighbor_temps = []
+    for i, pos in enumerate(cylinder_positions):
         if abs(pos[0]) > 1e4:
             new_positions.append(pos)
             new_temps.append(cylinder_temps[i])
             continue
 
-        distances = np.linalg.norm(cylinder_positions - pos, axis=1)
-        nearest_indices = np.argsort(distances)[1:m_neighbors+1]
-        neighbor_positions = cylinder_positions[nearest_indices]
-        neighbor_temps = [cylinder_temps[j] for j in nearest_indices]
-        temp = cylinder_temps[i]
+        if N > 1:
+            distances = np.linalg.norm(cylinder_positions - pos, axis=1)
+            nearest_indices = np.argsort(distances)[1:m_neighbors+1]
+            neighbor_positions = cylinder_positions[nearest_indices]
+            neighbor_temps = [cylinder_temps[j] for j in nearest_indices]
+            avg_neighbor_dist = np.mean(distances[nearest_indices])
+            avg_neighbor_pos = np.mean(neighbor_positions, axis=0)
+        else:
+            neighbor_positions = []
+            neighbor_temps = []
+            avg_neighbor_dist = 0
+            avg_neighbor_pos = pos
 
-        avg_neighbor_dist = np.mean(distances[nearest_indices])
-        avg_neighbor_pos = np.mean(neighbor_positions, axis=0)
+        temp = cylinder_temps[i]
 
         # Determine direction based on temperature optimization
         direction = np.zeros(2)
