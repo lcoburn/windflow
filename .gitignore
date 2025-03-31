@@ -4,3 +4,7 @@ instructions.txt
 output.mp4
 .DS_Store
 *.mp4
+*.odt#
+penguin_sim_default*
+*.cpython*
+penguin_sim_T_air*

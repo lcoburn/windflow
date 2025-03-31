@@ -1,0 +1,260 @@
+<h1 id="emperor-penguin-thermoregulation-simulation">Emperor Penguin
+Thermoregulation Simulation</h1>
+<h2 id="user-guide">User Guide</h2>
+<p>This guide explains how to use the Emperor penguin thermoregulation
+simulation system to study how penguins maintain body temperature in
+harsh Antarctic conditions.</p>
+<h2 id="table-of-contents">Table of Contents</h2>
+<ol type="1">
+<li><a href="#overview">Overview</a></li>
+<li><a href="#setup">Setup</a></li>
+<li><a href="#running-the-simulation">Running the Simulation</a></li>
+<li><a href="#parameter-sweeps">Parameter Sweeps</a></li>
+<li><a href="#analyzing-results">Analyzing Results</a></li>
+<li><a href="#advanced-usage">Advanced Usage</a></li>
+<li><a href="#parameter-reference">Parameter Reference</a></li>
+</ol>
+<h2 id="overview">Overview</h2>
+<p>This simulation system models Emperor penguin thermoregulation and
+group behavior in a dynamic environment. Each penguin is represented as
+a circle with:</p>
+<ul>
+<li>A body temperature that changes based on environmental factors</li>
+<li>Movement that responds to temperature state (cold penguins seek
+warmth, hot ones avoid it)</li>
+<li>Visualization showing temperature via color and heading via a yellow
+arrow</li>
+</ul>
+<p>The system is composed of:</p>
+<ul>
+<li><strong>PenguinSimulation</strong>: Core simulation logic</li>
+<li><strong>PenguinVisualizer</strong>: Visualization and animation</li>
+<li><strong>Analysis Tools</strong>: For analyzing parameter sweep
+results</li>
+</ul>
+<h2 id="setup">Setup</h2>
+<p>Save these Python files to your project directory:</p>
+<ol type="1">
+<li><code>penguin_simulation_core.py</code> - The core simulation
+logic</li>
+<li><code>penguin_visualization.py</code> - The visualization
+system</li>
+<li><code>penguin_main.py</code> - The main script with examples</li>
+<li><code>penguin_analysis.py</code> - Analysis tools for parameter
+sweeps</li>
+</ol>
+<p>Dependencies: - NumPy - Matplotlib - SciPy (for analysis tools) -
+Seaborn (for prettier plots in analysis)</p>
+<h2 id="running-the-simulation">Running the Simulation</h2>
+<h3 id="option-1-using-the-main-script">Option 1: Using the main
+script</h3>
+<p>The simplest approach is to run the <code>penguin_main.py</code>
+script:</p>
+<p>```bash python penguin_main.py</p>
+<h2 id="parameter-reference">Parameter Reference</h2>
+<p>The simulation has many parameters you can adjust:</p>
+<table>
+<colgroup>
+<col style="width: 22%" />
+<col style="width: 27%" />
+<col style="width: 18%" />
+<col style="width: 31%" />
+</colgroup>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+<th>Default</th>
+<th>Typical Range</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>N</code></td>
+<td>Number of penguins</td>
+<td>10</td>
+<td>1-100</td>
+</tr>
+<tr>
+<td><code>R</code></td>
+<td>Penguin radius (m)</td>
+<td>0.15</td>
+<td>0.1-0.2</td>
+</tr>
+<tr>
+<td><code>hard_stop</code></td>
+<td>Minimum distance between penguins</td>
+<td>0.33</td>
+<td>0.3-0.4</td>
+</tr>
+<tr>
+<td><code>T_air</code></td>
+<td>Air temperature (°C)</td>
+<td>-20.0</td>
+<td>-70.0 to -10.0</td>
+</tr>
+<tr>
+<td><code>U</code></td>
+<td>Base wind speed (m/s)</td>
+<td>5.0</td>
+<td>0.0-15.0</td>
+</tr>
+<tr>
+<td><code>T_opt</code></td>
+<td>Optimal core temperature (°C)</td>
+<td>38.0</td>
+<td>37.0-39.0</td>
+</tr>
+<tr>
+<td><code>T_min</code></td>
+<td>Min temperature for display</td>
+<td>35.0</td>
+<td>-</td>
+</tr>
+<tr>
+<td><code>T_max</code></td>
+<td>Max temperature for display</td>
+<td>41.0</td>
+<td>-</td>
+</tr>
+<tr>
+<td><code>T_cold_death</code></td>
+<td>Fatal hypothermia temperature (°C)</td>
+<td>34.0</td>
+<td>32.0-35.0</td>
+</tr>
+<tr>
+<td><code>T_hot_death</code></td>
+<td>Fatal hyperthermia temperature (°C)</td>
+<td>42.0</td>
+<td>41.0-43.0</td>
+</tr>
+<tr>
+<td><code>k_air</code></td>
+<td>Heat loss to air coefficient</td>
+<td>0.005</td>
+<td>0.001-0.01</td>
+</tr>
+<tr>
+<td><code>k_wind</code></td>
+<td>Wind chill effect coefficient</td>
+<td>0.008</td>
+<td>0.001-0.02</td>
+</tr>
+<tr>
+<td><code>k_rad</code></td>
+<td>Heat radiation between penguins</td>
+<td>0.06</td>
+<td>0.01-0.1</td>
+</tr>
+<tr>
+<td><code>k_body</code></td>
+<td>Metabolic heat generation</td>
+<td>0.02</td>
+<td>0.01-0.05</td>
+</tr>
+<tr>
+<td><code>dt</code></td>
+<td>Time step</td>
+<td>0.01</td>
+<td>0.001-0.05</td>
+</tr>
+<tr>
+<td><code>m_neighbors</code></td>
+<td>Number of neighbors to consider</td>
+<td>7</td>
+<td>3-10</td>
+</tr>
+<tr>
+<td><code>heading_inertia</code></td>
+<td>Inertia factor for penguin heading (0-1)</td>
+<td>0.9</td>
+<td>0.7-0.99</td>
+</tr>
+<tr>
+<td><code>domain_radius</code></td>
+<td>Simulation domain radius</td>
+<td>5.0</td>
+<td>2.0-10.0</td>
+</tr>
+</tbody>
+</table>
+<h3 id="realistic-values">Realistic Values</h3>
+<p>For the most realistic Emperor penguin simulation, use these
+values:</p>
+<table>
+<colgroup>
+<col style="width: 35%" />
+<col style="width: 22%" />
+<col style="width: 41%" />
+</colgroup>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Value</th>
+<th>Explanation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>T_opt</code></td>
+<td>38.0°C</td>
+<td>Actual core temperature of Emperor penguins</td>
+</tr>
+<tr>
+<td><code>T_cold_death</code></td>
+<td>34.0°C</td>
+<td>Temperature at which severe hypothermia becomes fatal</td>
+</tr>
+<tr>
+<td><code>T_hot_death</code></td>
+<td>42.0°C</td>
+<td>Temperature at which severe hyperthermia becomes fatal</td>
+</tr>
+<tr>
+<td><code>T_air</code></td>
+<td>-40.0 to -60.0°C</td>
+<td>Typical Antarctic winter temperature range</td>
+</tr>
+<tr>
+<td><code>U</code></td>
+<td>5.0 to 15.0 m/s</td>
+<td>Antarctic katabatic wind speeds</td>
+</tr>
+<tr>
+<td><code>k_air</code></td>
+<td>0.005</td>
+<td>Heat loss coefficient accounting for thick feather insulation</td>
+</tr>
+<tr>
+<td><code>k_wind</code></td>
+<td>0.008</td>
+<td>Wind chill effect reduced by feather and fat layers</td>
+</tr>
+<tr>
+<td><code>k_rad</code></td>
+<td>0.06</td>
+<td>Radiative heat transfer between huddling penguins</td>
+</tr>
+<tr>
+<td><code>k_body</code></td>
+<td>0.02</td>
+<td>Metabolic heat generation including shivering thermogenesis</td>
+</tr>
+<tr>
+<td><code>m_neighbors</code></td>
+<td>7</td>
+<td>Typical number of neighboring penguins in a huddle</td>
+</tr>
+<tr>
+<td><code>heading_inertia</code></td>
+<td>0.9</td>
+<td>Realistic value for smooth penguin movement</td>
+</tr>
+<tr>
+<td><code>R</code></td>
+<td>0.15</td>
+<td>Approximates half the diameter of an adult Emperor penguin</td>
+</tr>
+</tbody>
+</table>
